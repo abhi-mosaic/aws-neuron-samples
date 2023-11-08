@@ -3,9 +3,9 @@ from transformers import AutoTokenizer
 from itertools import chain
 import os
 
-dataset_name = "wikicorpus"
-dataset_config_name = "raw_en"
-save_path = "~/examples_datasets/wikicorpus_llama2_7B_tokenized_4k"
+dataset_name = "wikitext"
+dataset_config_name = "wikitext-2-raw-v1"
+save_path = "~/examples_datasets/wikitext_llama2_7B_tokenized_4k"
 tokenizer_path = os.getcwd()
 
 save_path = os.path.expanduser(save_path)
@@ -17,7 +17,7 @@ block_size = 4096
 
 raw_datasets = load_dataset(dataset_name, dataset_config_name)
 
-tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
+tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-chat-hf")
 
 column_names = raw_datasets["train"].column_names
 text_column_name = "text" if "text" in column_names else column_names[0]
