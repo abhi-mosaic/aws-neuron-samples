@@ -21,7 +21,7 @@ USE_MIX_PRECISION=1
 # 0: use pure DP; 1: use ZeRO-1
 USE_ZERO_1=1
 # global batch size
-GBS=1024
+GBS=64
 # micro batch size
 MBS=1
 # number of steps to run
@@ -33,7 +33,7 @@ LR=3.0e-4
 # model path
 MODEL_PATH=$SCRIPT_DIR
 # data path
-DATA_PATH="~/examples_datasets/wikicorpus_llama2_7B_tokenized_4k"
+DATA_PATH="~/examples_datasets/wikitext_llama2_7B_tokenized_4k"
 # sequence length
 SEQ_LEN=4096
 
@@ -124,5 +124,5 @@ torchrun $DISTRIBUTED_ARGS \
     --seq_len $SEQ_LEN \
     --sequence_parallel_enabled \
     --selective_checkpoint_enabled \
-    --logging_interval 10 \
+    --logging_interval 1 \
     $EXTRA_ARGS |& tee $OUTPUT_LOG

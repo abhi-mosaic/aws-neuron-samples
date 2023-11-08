@@ -152,7 +152,7 @@ class Throughput:
     between two calls and uses that time to calculate the throughput.
     """
     def __init__(
-        self, batch_size, world_size, grad_accum_usteps, moving_avg_window_size=10, logging_interval=1
+        self, batch_size, world_size, grad_accum_usteps, moving_avg_window_size=3, logging_interval=1
     ):
         self.seqs_per_iteration = batch_size * world_size * grad_accum_usteps*logging_interval
         self.moving_avg_window_size = math.ceil(moving_avg_window_size/logging_interval)
@@ -176,7 +176,7 @@ class Throughput:
 class Logger:
     def __init__(self, args, world_size, model_dtype):
         xla = "torch_xla" in sys.modules
-        self.throughputs = []
+        self.throughputs = [-1]
         dtype_short = model_dtype.replace("torch.", "")
         self.tb = SummaryWriter(
             os.path.join(
@@ -415,6 +415,7 @@ def train_llama(flags):
     def train_loop_fn(
         model, optimizer, train_loader, epoch, global_step, training_ustep, running_loss, use_zero_1
     ):
+        running_loss_reduced_detached = torch.tensor(0)
         for _, data in enumerate(train_loader):
             training_ustep += 1
             input_ids = data["input_ids"]
